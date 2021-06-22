@@ -15,7 +15,7 @@ from datetime import timedelta
 import oss2 as oss
 import pytz
 import requests.exceptions
-import spider_sysmon
+# import spider_sysmon
 from scrapy import logformatter
 from .preset_items import ErrorItem
 
@@ -354,34 +354,34 @@ def _retry_oss_on_error(exception):
     return False
 
 
-class MonitorPipeline(MongodbPipeline, spider_sysmon.SysmonPipeline):
-    collection_name_list = {}
-    ck_count = {}
-    timedelta_hours = 0
-
-    def status(self, spider):
-        if not self.collection_name_list or not self.ck_count or not self.timedelta_hours:
-            return
-        now = datetime.now(_tz)
-        hour = timedelta(hours=self.timedelta_hours)
-        dt = now - hour
-
-        # db = client.database
-        col_count = []
-        caution = ''
-        for k, v in self.collection_name_list.items():
-            if spider.name == k:
-                # if isinstance(v, list):
-                for i in v:
-                    self.db[i].ensure_index('modified')
-                    count = self.db[i].find({'modified': {'$gte': dt}}).count()
-                    col_count.append(
-                        {i: {'crawl': count, 'ck': self.ck_count[i], 'crawl/ck': round(count / self.ck_count[i], 2)}})
-                    # if count / ck_count[i] >= 1.2 or count / ck_count[i] <= 0.8:
-                    if count / self.ck_count[i] <= 0.5:
-                        # if count/ck_count[i] >= 1 or count/ck_count[i] < 1:
-                        caution = '警告！！！！！！！！！！！！！！！！！'
-        return '{}{}爬取的数据表:数据量{}'.format(caution, spider.name, col_count)
+# class MonitorPipeline(MongodbPipeline, spider_sysmon.SysmonPipeline):
+#     collection_name_list = {}
+#     ck_count = {}
+#     timedelta_hours = 0
+#
+#     def status(self, spider):
+#         if not self.collection_name_list or not self.ck_count or not self.timedelta_hours:
+#             return
+#         now = datetime.now(_tz)
+#         hour = timedelta(hours=self.timedelta_hours)
+#         dt = now - hour
+#
+#         # db = client.database
+#         col_count = []
+#         caution = ''
+#         for k, v in self.collection_name_list.items():
+#             if spider.name == k:
+#                 # if isinstance(v, list):
+#                 for i in v:
+#                     self.db[i].ensure_index('modified')
+#                     count = self.db[i].find({'modified': {'$gte': dt}}).count()
+#                     col_count.append(
+#                         {i: {'crawl': count, 'ck': self.ck_count[i], 'crawl/ck': round(count / self.ck_count[i], 2)}})
+#                     # if count / ck_count[i] >= 1.2 or count / ck_count[i] <= 0.8:
+#                     if count / self.ck_count[i] <= 0.5:
+#                         # if count/ck_count[i] >= 1 or count/ck_count[i] < 1:
+#                         caution = '警告！！！！！！！！！！！！！！！！！'
+#         return '{}{}爬取的数据表:数据量{}'.format(caution, spider.name, col_count)
 
 
 class DropItemLogPipeline(object):

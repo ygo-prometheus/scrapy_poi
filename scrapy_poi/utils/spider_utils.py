@@ -94,14 +94,14 @@ class CustomSettings(object):
 
         if self.EnMongoDB:
             self.ITEM_PIPELINES_CUS.update({
-                "{}.utils.pipelines_.RequestErrorMongodbPipeline".format(self.file_name): 198,  # 下载错误收集管道
+                "{}.utils.preset_pipelines.RequestErrorMongodbPipeline".format(self.file_name): 198,  # 下载错误收集管道
             })
 
 
         # 默认内置管道
         self.ITEM_PIPELINES_CUS.update({
-            "{}.utils.pipelines_.AddTime".format(self.file_name): 197,  # 自动添加时间戳字段
-            "{}.utils.pipelines_.DropItemLogPipeline".format(self.file_name): 1000,  # 抛弃item的输出日志
+            "{}.utils.preset_pipelines.AddTime".format(self.file_name): 197,  # 自动添加时间戳字段
+            "{}.utils.preset_pipelines.DropItemLogPipeline".format(self.file_name): 1000,  # 抛弃item的输出日志
         })
 
         for key_, value_ in self.__dict__.items():
